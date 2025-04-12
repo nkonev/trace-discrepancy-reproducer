@@ -1,0 +1,134 @@
+# logging.pattern.console: '%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%5p) %clr(${PID:- }){magenta} traceId=%X{traceId} spanId=%X{spanId} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-50.50(%logger{49}:%line)){cyan} %clr(:){faint} %m%n%wEx'
+#logging.level.org.springframework.boot.web.servlet: TRACE
+logging.level.org.springframework.security: TRACE
+#logging.level.org.springframework.security.oauth2: DEBUG
+#logging.level.org.apache.tomcat.jdbc.pool: TRACE
+#logging.level.org.springframework.security: DEBUG
+#logging.level.org.springframework.session: DEBUG
+#logging.level.org.springframework.security.web: DEBUG
+#logging.level.org.apache.catalina: TRACE
+#logging.level.org.springframework.web: DEBUG
+#logging.level.org.hibernate.SQL: DEBUG
+#logging.level.org.hibernate.type: TRACE
+# logging.level.org.springframework.jdbc.core: TRACE
+# logging.level.org.springframework.web: TRACE
+
+custom.api-url: "http://localhost:8081/api/aaa"
+custom.frontend-url: "http://localhost:8081"
+custom.registration-confirm-exit-token-not-found-url: "${custom.frontend-url}/confirm/registration/token-not-found"
+custom.registration-confirm-exit-user-not-found-url: "${custom.frontend-url}/confirm/registration/user-not-found"
+custom.registration-confirm-exit-success-url: "${custom.frontend-url}"
+custom.password-reset-enter-new-url: "${custom.frontend-url}/password-restore/enter-new"
+custom.confirm-change-email-exit-success-url: "${custom.frontend-url}"
+custom.confirm-change-email-exit-token-not-found-url: "${custom.frontend-url}/confirm/change/email/token-not-found"
+
+
+
+spring:
+  application:
+    name: aaa
+  data:
+    ldap:
+      repositories:
+        enabled: false
+
+custom:
+  email:
+    from: "username@yandex.ru"
+  confirmation:
+    registration:
+      token:
+        ttl: 20m
+    change-email:
+      token:
+        ttl: 20m
+  password-reset:
+    token:
+      ttl: 20m
+  online-estimation: 10m
+  # an interval should be less than online-estimation
+  frontend-session-ping-interval: 1m
+  debug-response: false
+
+server.tomcat.accesslog.enabled: false
+server.tomcat.accesslog.pattern: '%t %a "%r" %s (%D ms)'
+server.port: 8060
+
+server.tomcat.basedir: ${java.io.tmpdir}/name.nkonev.aaa.tomcat
+spring.servlet.multipart.max-file-size: 6MB
+spring.servlet.multipart.max-request-size: 8MB
+server.servlet.encoding.force-response: true
+server.servlet.session.cookie.name: VIDEOCHAT_SESSION
+# in order not to remove cookie on mobile browser unloading
+server.servlet.session.cookie.max-age: 2d
+
+custom.csrf.cookie:
+  name: VIDEOCHAT_XSRF_TOKEN
+  same-site: ""
+  max-age: 2d
+
+# this is URL
+spring.mvc.static-path-pattern: /**
+# You need to remove "file:..." element for production or you can to remove spring.resources.static-locations
+# first element - for eliminate manual restart app in IntelliJ for copy compiled js to target/classes, last slash is important, second element - for documentation
+spring.web.resources.static-locations: file:aaa/src/main/resources/static/, classpath:/static/
+
+management.endpoints.web.exposure.include: '*'
+management.endpoint.health.show-details: always
+# https://spring.io/blog/2022/10/12/observability-with-spring-boot-3
+management.tracing.sampling.probability: 1.0
+management:
+  health:
+    mail:
+      enabled: false
+    ldap:
+      enabled: false
+  server:
+    port: 3005
+    ssl:
+      enabled: false
+    add-application-context-header: false
+
+custom.ldap:
+  resolve-conflicts-strategy: WRITE_NEW_AND_RENAME_OLD
+  auth:
+    base: ""
+    enabled: false
+    filter: "uid={0}"
+  attribute-names:
+    id: uidNumber # name of attribute, which is considered as ldap_id. any id-like attribute, which won't be changed on user rename, it can be number or string
+    role: ""
+    email: ""
+    locked: ""
+    username: uid
+  password:
+    encodingType: ""
+    strength: 10
+
+custom.keycloak:
+  resolve-conflicts-strategy: WRITE_NEW_AND_RENAME_OLD
+  token-delta: 5s
+  allow-unbind: false
+
+custom.vkontakte:
+  resolve-conflicts-strategy: WRITE_NEW_AND_RENAME_OLD
+
+custom.google:
+  resolve-conflicts-strategy: WRITE_NEW_AND_RENAME_OLD
+
+custom.facebook:
+  resolve-conflicts-strategy: WRITE_NEW_AND_RENAME_OLD
+
+custom.http-client:
+  connect-timeout: 3s
+  read-timeout: 30s
+
+custom.allowed-avatar-urls: ""
+
+custom.admins-corner:
+  management-urls:
+    - "/jaeger"
+    - "/minio"
+    - "/rabbitmq"
+    - "/postgresql"
+    - "/opensearch-dashboards"
