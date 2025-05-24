@@ -84,7 +84,6 @@ management:
     ldap:
       enabled: false
   server:
-    port: 3005
     ssl:
       enabled: false
     add-application-context-header: false
